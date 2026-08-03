@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hangout Hub</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<header>
+
+<h1>Hangout Hub</h1>
+
+<p>Plan • Connect • Capture Memories</p>
+
+</header>
+
+<div class="container">
+
+<div class="card">
+
+<h2>Welcome!</h2>
+
+<p>Create your own hangout event and manage everything in one place.</p>
+
+<div class="menu">
+
+<a href="/create">
+<div class="option">
+<h2>➕ Create Event</h2>
+<p>Create a new hangout</p>
+</div>
+</a>
+
+<a href="/gallery">
+<div class="option">
+<h2>📸 Gallery</h2>
+<p>Upload & View Photos</p>
+</div>
+</a>
+
+<a href="/poll">
+<div class="option">
+<h2>🗳 Plan</h2>
+<p>Create Polls</p>
+</div>
+</a>
+
+<a href="/planner">
+<div class="option">
+<h2>🤖 AI Planner</h2>
+<p>Generate Trip Plan</p>
+</div>
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+<footer>
+
+Made with ❤️ using Flask
+
+</footer>
+
+</body>
+</html>

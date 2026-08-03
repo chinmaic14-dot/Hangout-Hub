@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AI Planner</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+
+<style>
+
+.result{
+
+margin-top:20px;
+padding:20px;
+background:white;
+border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,2,0.2);
+
+}
+
+
+.plan-text{
+
+white-space:pre-line;
+line-height:1.6;
+
+}
+
+
+.trip-actions{
+
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-top:15px;
+
+}
+
+
+.trip-actions button{
+
+padding:10px 15px;
+border-radius:10px;
+cursor:pointer;
+border:none;
+
+}
+
+
+.edit-btn{
+background:#3498db;
+color:white;
+}
+
+
+.delete-btn{
+background:#e74c3c;
+color:white;
+}
+
+
+.pdf-btn{
+background:#27ae60;
+color:white;
+}
+
+
+.trip-card{
+
+margin-top:20px;
+
+}
+
+
+.weather-box{
+
+margin-top:20px;
+padding:15px;
+border-radius:15px;
+background:white;
+
+}
+
+
+.dark-mode .weather-box{
+
+background:#1e1e1e;
+color:white;
+
+}
+
+
+</style>
+
+
+</head>
+
+
+
+<body>
+
+
+<header>
+
+<h1>🤖 AI Planner</h1>
+
+<p>Plan your perfect hangout effortlessly</p>
+
+
+<button onclick="toggleDarkMode()">
+
+🌙 Dark Mode
+
+</button>
+
+
+</header>
+
+
+
+
+<div class="container">
+
+
+
+<!-- SEARCH -->
+
+<div class="card">
+
+
+<h2>🔍 Search Trips by Destination</h2>
+
+
+<input 
+type="text"
+id="searchInput"
+onkeyup="searchTrips()"
+placeholder="Search destination...">
+
+
+</div>
+
+
+
+
+
+<!-- WEATHER -->
+
+
+<div class="card">
+
+
+<h2>🌦 Weather Information</h2>
+
+
+<input 
+type="text"
+id="city"
+placeholder="Enter destination">
+
+
+<button onclick="getWeather()">
+
+Check Weather
+
+</button>
+
+
+
+<div id="weatherResult" class="weather-box">
+
+</div>
+
+
+</div>
+
+
+
+
+
+<!-- CREATE PLAN -->
+
+
+<div class="card">
+
+
+<h2>Trip Details</h2>
+
+
+
+<form method="POST">
+
+
+<label>Destination</label>
+
+<input 
+type="text"
+name="destination"
+placeholder="Example: Mysore"
+required>
+
+
+
+
+<label>Budget (₹)</label>
+
+<input 
+type="number"
+name="budget"
+placeholder="5000"
+required>
+
+
+
+
+<label>Number of Friends</label>
+
+<input 
+type="number"
+name="friends"
+placeholder="8"
+required>
+
+
+
+
+<label>Duration</label>
+
+
+<select name="duration">
+
+
+<option>Half Day</option>
+
+<option>1 Day</option>
+
+<option>2 Days</option>
+
+<option>Weekend</option>
+
+
+</select>
+
+
+
+
+<label>Places / Activities you want</label>
+
+
+<input 
+type="text"
+name="places"
+placeholder="Example: Palace, Cafe, Shopping">
+
+
+
+
+<label>Things you want to pack</label>
+
+
+<input 
+type="text"
+name="packing"
+placeholder="Example: Camera, Shoes, Water Bottle">
+
+
+
+
+<label>Cost Per Person</label>
+
+
+<select name="cost_option">
+
+
+<option value="estimate">
+
+Estimate Automatically
+
+</option>
+
+
+<option value="manual">
+
+Enter My Own Cost
+
+</option>
+
+
+</select>
+
+
+
+
+
+<label>Enter Cost Per Person (Optional)</label>
+
+
+<input 
+type="number"
+name="manual_cost"
+placeholder="Example:1500">
+
+
+<br><br>
+
+
+
+<button type="submit">
+
+🚀 Generate Plan
+
+</button>
+
+
+</form>
+
+
+</div>
+
+
+
+
+
+{% if result %}
+
+<div class="result" id="currentPlan">
+
+<h2>
+🤖 AI Generated Trip Plan
+</h2>
+
+
+<div class="plan-text">
+{{ result }}
+</div>
+
+
+<br>
+
+
+<form action="/download-pdf" method="POST">
+
+<input 
+type="hidden"
+name="plan"
+value="{{ result }}">
+
+
+<button type="submit" class="pdf-btn">
+📄 Download PDF
+</button>
+
+</form>
+
+
+<br>
+
+
+<button onclick="shareImage()">
+📸 Save Plan as Image
+</button>
+
+
+{% if trips %}
+
+<br><br>
+
+
+<a href="{{ url_for('edit_trip', trip_id=trips[-1].id) }}">
+
+<button class="edit-btn" type="button">
+✏️ Edit Trip
+</button>
+
+</a>
+
+
+
+<a href="{{ url_for('delete_trip', trip_id=trips[-1].id) }}"
+onclick="return confirm('Delete this trip?')">
+
+<button class="delete-btn" type="button">
+🗑 Delete Trip
+</button>
+
+</a>
+
+
+{% endif %}
+
+
+</div>
+
+{% endif %}
+{% if trips %}
+
+
+<div class="result">
+
+
+<h2>
+
+👥 Team Created Plans
+
+</h2>
+
+
+
+
+{% for trip in trips %}
+
+
+
+<div class="trip-card">
+
+
+<hr>
+
+
+<h3 class="destination">
+
+📍 {{ trip.destination }}
+
+</h3>
+
+
+
+<p>
+<b>Budget:</b> ₹{{ trip.budget }}
+</p>
+
+
+<p>
+<b>Friends:</b> {{ trip.friends }}
+</p>
+
+
+<p>
+<b>Duration:</b> {{ trip.duration }}
+</p>
+
+
+
+
+<div class="plan-text">
+
+
+{{ trip.plan }}
+
+
+</div>
+
+
+
+
+<div class="trip-actions">
+
+
+
+<a href="{{ url_for('edit_trip', trip_id=trip.id) }}">
+
+
+<button class="edit-btn" type="button">
+
+✏️ Edit Trip
+
+</button>
+
+
+</a>
+
+
+
+
+
+<a href="{{ url_for('delete_trip', trip_id=trip.id) }}"
+onclick="return confirm('Delete this trip?')">
+
+
+<button class="delete-btn" type="button">
+
+🗑 Delete Trip
+
+</button>
+
+
+</a>
+
+
+
+
+
+<a href="{{ url_for('download_trip', trip_id=trip.id) }}">
+
+
+<button class="pdf-btn" type="button">
+
+📄 Download PDF
+
+</button>
+
+
+</a>
+
+
+
+</div>
+
+
+</div>
+
+
+
+{% endfor %}
+
+
+
+</div>
+
+
+
+{% endif %}
+
+
+
+
+
+
+<br>
+
+
+<a href="/">
+
+
+<button>
+
+🏠 Back to Home
+
+</button>
+
+
+</a>
+
+
+
+
+</div>
+
+
+
+
+
+<footer>
+
+Hangout Hub © 2026
+
+</footer>
+
+
+
+
+
+<!-- IMAGE DOWNLOAD LIBRARY -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+
+
+<!-- YOUR JS FILE -->
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+
+
+</body>
+
+
+</html>

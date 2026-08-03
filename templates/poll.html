@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Polls</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<style>
+
+.poll-card{
+    border:1px solid #ddd;
+    padding:15px;
+    margin-bottom:15px;
+    border-radius:10px;
+}
+
+.action-buttons{
+    display:flex;
+    gap:10px;
+    margin-top:15px;
+}
+
+.action-buttons button{
+    padding:8px 12px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.edit-btn{
+    background:#3498db;
+    color:white;
+}
+
+.delete-btn{
+    background:#e74c3c;
+    color:white;
+}
+
+.vote-btn{
+    margin-left:10px;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+<h1>🗳 Hangout Hub Polls</h1>
+
+<p>Create polls and let everyone vote.</p>
+
+</header>
+
+
+
+<div class="container">
+
+
+
+<div class="card">
+
+<h2>Create New Poll</h2>
+
+
+<form method="POST">
+
+
+<input type="text" 
+name="category" 
+placeholder="Poll Title" 
+required>
+
+<br><br>
+
+
+<input type="text" 
+name="option1" 
+placeholder="Option 1" 
+required>
+
+<br><br>
+
+
+<input type="text" 
+name="option2" 
+placeholder="Option 2" 
+required>
+
+<br><br>
+
+
+<input type="text" 
+name="option3" 
+placeholder="Option 3" 
+required>
+
+<br><br>
+
+
+<input type="text" 
+name="option4" 
+placeholder="Option 4" 
+required>
+
+<br><br>
+
+
+<button type="submit">
+Create Poll
+</button>
+
+
+</form>
+
+
+</div>
+
+
+
+
+
+<div class="card">
+
+
+<h2>Available Polls</h2>
+
+
+
+{% for poll in polls %}
+
+
+<div class="poll-card">
+
+
+<h3>
+{{ poll.category }}
+</h3>
+
+
+
+<p>
+
+{{ poll.option1 }}
+
+<a href="{{ url_for('vote', poll_id=poll.id, option=1) }}">
+
+<button class="vote-btn">
+Vote
+</button>
+
+</a>
+
+Votes: {{ poll.votes1 }}
+
+</p>
+
+
+
+
+<p>
+
+{{ poll.option2 }}
+
+<a href="{{ url_for('vote', poll_id=poll.id, option=2) }}">
+
+<button class="vote-btn">
+Vote
+</button>
+
+</a>
+
+Votes: {{ poll.votes2 }}
+
+</p>
+
+
+
+
+
+<p>
+
+{{ poll.option3 }}
+
+<a href="{{ url_for('vote', poll_id=poll.id, option=3) }}">
+
+<button class="vote-btn">
+Vote
+</button>
+
+</a>
+
+Votes: {{ poll.votes3 }}
+
+</p>
+
+
+
+
+
+<p>
+
+{{ poll.option4 }}
+
+<a href="{{ url_for('vote', poll_id=poll.id, option=4) }}">
+
+<button class="vote-btn">
+Vote
+</button>
+
+</a>
+
+Votes: {{ poll.votes4 }}
+
+</p>
+
+
+
+
+
+<div class="action-buttons">
+
+
+<a href="{{ url_for('edit_poll', poll_id=poll.id) }}">
+
+<button class="edit-btn" type="button">
+
+✏️ Edit Poll
+
+</button>
+
+</a>
+
+
+
+
+<a href="{{ url_for('delete_poll', poll_id=poll.id) }}"
+onclick="return confirm('Delete this poll?')">
+
+
+<button class="delete-btn" type="button">
+
+🗑 Delete Poll
+
+</button>
+
+
+</a>
+
+
+</div>
+
+
+
+</div>
+
+
+{% endfor %}
+
+
+
+</div>
+
+
+
+<br>
+
+
+
+<a href="/planner">
+
+<button>
+
+Next → AI Planner
+
+</button>
+
+</a>
+
+
+
+</div>
+
+
+
+
+<footer>
+
+Hangout Hub
+
+</footer>
+
+
+
+</body>
+
+</html>

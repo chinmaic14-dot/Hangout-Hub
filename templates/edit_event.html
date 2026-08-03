@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Edit Event</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<style>
+
+.container{
+max-width:700px;
+margin:40px auto;
+background:white;
+padding:25px;
+border-radius:12px;
+box-shadow:0 3px 10px rgba(0,0,0,0.2);
+}
+
+input, textarea, select{
+width:100%;
+padding:10px;
+margin:8px 0 18px;
+border:1px solid #ccc;
+border-radius:8px;
+box-sizing:border-box;
+}
+
+button{
+padding:10px 20px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-size:16px;
+}
+
+.save-btn{
+background:#28a745;
+color:white;
+}
+
+.cancel-btn{
+background:#dc3545;
+color:white;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>✏️ Edit Event</h1>
+
+<form method="POST">
+
+<label>Event Title</label>
+<input type="text" name="title" value="{{ event.title }}" required>
+
+<label>Category</label>
+<input type="text" name="category" value="{{ event.category }}" required>
+
+<label>Description</label>
+<textarea name="description" rows="4" required>{{ event.description }}</textarea>
+
+<label>Date</label>
+<input type="date" name="date" value="{{ event.date }}" required>
+
+<label>Time</label>
+<input type="time" name="time" value="{{ event.time }}" required>
+
+<label>Location</label>
+<input type="text" name="location" value="{{ event.location }}" required>
+
+<label>Maximum Members</label>
+<input type="number" name="members" value="{{ event.members }}" required>
+
+<br>
+
+<button class="save-btn" type="submit">
+💾 Save Changes
+</button>
+
+<a href="{{ url_for('my_events') }}">
+<button class="cancel-btn" type="button">
+❌ Cancel
+</button>
+</a>
+
+</form>
+
+</div>
+
+</body>
+</html>
