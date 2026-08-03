@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Saved Trips</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<style>
+
+.trip-card{
+
+background:white;
+padding:20px;
+margin:20px 0;
+border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,0,0.2);
+
+}
+
+.plan{
+
+white-space:pre-line;
+line-height:1.6;
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+<h1>💾 Saved Trip Plans</h1>
+
+<p>Your previous AI generated trips</p>
+
+</header>
+
+
+
+<div class="container">
+
+
+{% if trips %}
+
+
+{% for trip in trips %}
+
+
+<div class="trip-card">
+
+
+<h2>📍 {{ trip.destination }}</h2>
+
+
+<p>
+<b>Budget:</b> ₹{{ trip.budget }}
+</p>
+
+
+<p>
+<b>Friends:</b> {{ trip.friends }}
+</p>
+
+
+<p>
+<b>Duration:</b> {{ trip.duration }}
+</p>
+
+
+
+<hr>
+
+
+<h3>🤖 Plan</h3>
+
+
+<div class="plan">
+
+{{ trip.plan }}
+
+</div>
+
+
+</div>
+
+
+{% endfor %}
+
+
+
+{% else %}
+
+
+<div class="trip-card">
+
+<h3>No saved trips yet.</h3>
+
+<p>Create a trip using AI Planner first.</p>
+
+</div>
+
+
+{% endif %}
+
+
+
+
+<br>
+
+
+<a href="/planner">
+
+<button>
+
+➕ Create New Trip
+
+</button>
+
+</a>
+
+
+
+<br><br>
+
+
+
+<a href="/">
+
+<button>
+
+🏠 Home
+
+</button>
+
+</a>
+
+
+
+</div>
+
+
+
+<footer>
+
+Hangout Hub © 2026
+
+</footer>
+
+
+</body>
+
+</html>
